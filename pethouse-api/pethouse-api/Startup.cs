@@ -26,6 +26,15 @@ namespace pethouse_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            //This ables mobile to connect
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyCorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+                //.AllowCredentials()); //Voi tarvita myöhemmin....
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,7 +44,11 @@ namespace pethouse_api
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            else
+            {
+                // For mobile apps, allow http traffic.
+                app.UseHttpsRedirection();
+            }
             app.UseHttpsRedirection();
 
             app.UseRouting();
