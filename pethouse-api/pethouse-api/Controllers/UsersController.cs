@@ -27,31 +27,59 @@ namespace pethouse_api.Controllers
             return "value";
         }
 
-        // POST api/<UsersController>
+        //// POST api/<UsersController>
+        //[HttpPost]
+        //public bool PostStatus(LoginModel input)
+        //{
+        //    try
+        //    {
+        //    var userName = input.userName;
+        //    var passWord = input.passWord;
+        //    pethouseContext context = new pethouseContext();
+        //        Users user = (from u in context.Users
+        //        where (u.Username == userName) && (u.Password == passWord)
+        //        select u).FirstOrDefault();
+                
+        //        if (user == null)
+        //        {
+        //            context.Dispose();
+        //            return false;
+        //        }
+
+        //        context.Dispose();
+        //        return true;
+        //    }
+        //    catch (System.Exception)
+        //    {
+                
+        //        throw;
+        //    }
+
+        //}
         [HttpPost]
-        public bool PostStatus(LoginModel input)
+        public Users PostStatus(LoginModel input)
         {
             try
             {
-            var userName = input.userName;
-            var passWord = input.passWord;
-            pethouseContext context = new pethouseContext();
-                Users user = (from u in context.Users
-                where (u.Username == userName) && (u.Password == passWord)
-                select u).FirstOrDefault();
-                
+                var userName = input.userName;
+                var passWord = input.passWord;
+                pethouseContext context = new pethouseContext();
+                var user = (from u in context.Users
+                              where (u.Username == userName) && (u.Password == passWord)
+                              select u).FirstOrDefault();
+
                 if (user == null)
                 {
                     context.Dispose();
-                    return false;
+                    return null;
                 }
 
                 context.Dispose();
-                return true;
+                return user;
             }
             catch (System.Exception)
             {
-                
+
                 throw;
             }
 

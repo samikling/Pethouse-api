@@ -27,5 +27,16 @@ namespace pethouse_api.Controllers
             return petNames;
 
         }
+        [HttpGet]
+        [Route("user/{key}")]
+        public List<Pets> GetPetByUserId(int key)
+        {
+            pethouseContext db = new pethouseContext();
+
+            var somePets = from c in db.Pets
+                                where c.UserId == key
+                                select c;
+            return somePets.ToList();
+        }
     } 
 }
