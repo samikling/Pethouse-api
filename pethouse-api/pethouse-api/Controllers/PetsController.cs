@@ -13,22 +13,17 @@ namespace pethouse_api.Controllers
     [ApiController]
     public class PetsController : ControllerBase
     {
-        // GET: api/<PetsController>
         [HttpGet]
-        public string[] GetAll()
+        [Route("")]
+        //Hae kaikki lemmikit
+        public List<Pets> GetAllPets()
         {
-            string[] petNames = null;
-            pethouseContext context = new pethouseContext();
-
-            petNames = (from e in context.Pets
-                        where (e.UserId == 1)
-                        select e.Petname + "-" +
-                        e.Race.Racename + "-" + e.Breed.Breedname).ToArray();
-
-            return petNames;
-
+            pethouseContext db = new pethouseContext();
+            List<Pets> pets = db.Pets.ToList();
+            return pets;
         }
-
+        // GET: api/<PetsController>
+        //Testataan erillaisia get vaihtoehtoja
         [HttpGet]
         [Route("user/dogs/{key}")]
         [Produces("application/json")]
@@ -36,10 +31,10 @@ namespace pethouse_api.Controllers
         {
             pethouseContext db = new pethouseContext();
             var userPets = (from p in db.Pets
-                       where p.UserId == key && p.RaceId == 1
-                       select p.Petname).ToArray();
+                            where p.UserId == key && p.RaceId == 1
+                            select p.Petname).ToArray();
             return userPets;
-            
+
         }
         [HttpGet]
         [Route("user/cats/{key}")]
@@ -65,5 +60,78 @@ namespace pethouse_api.Controllers
             return userPets;
 
         }
+        [HttpPost] //<-- filtteri, joka sallii vain POST-metodit
+        [Route("user/")]// <-- Routen placeholder
+        public ActionResult PostCreateNew([FromBody] Pets pet)
+        {
+            pethouseContext db = new pethouseContext(); //Tietokanta yhteytden muodostus
+            try
+            {
+                db.Pets.Add(pet);
+                db.SaveChanges();
+
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("Jokin meni pieleen asiakasta lisättäessä.\nOta yhteyttä Guruun!");
+            }
+            db.Dispose(); //Tietokannan vapautus
+            return Ok(pet.PetId); //Palauttaa vastaluodun uuden lemmikin avainarvon
+
+        }
+        [HttpPut]//<-- Filtteri, joka sallii vain PUT-metodit (Http-verbit)
+        [Route("{key}")] //<--key == petId
+        public ActionResult PutEdit(string key, [FromBody] Pets pet)
+        {
+            pethouseContext db = new pethouseContext();
+            try
+            {
+                Pets petDb = db.Pets.Find(key);
+                if (pet != null)
+                {
+                    petDb.Petname = pet.Petname;
+                    petDb.Birthdate = pet.Birthdate;
+                    petDb.Photo = pet.Photo;
+                    petDb.User = pet.User;
+                    petDb.RaceId = pet.RaceId;
+                    petDb.BreedId = pet.BreedId;
+                    db.SaveChanges();
+
+                    return Ok(petDb.PetId);
+                }
+                else
+                {
+                    return NotFound("No such ID in pets");
+                }
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("Error");
+            }
+            finally
+            {
+                db.Dispose();
+            }
+        }
+        [HttpDelete]
+        [Route("{key}")]
+        public ActionResult DeleteOnePet(string key)
+        {
+            pethouseContext db = new pethouseContext();
+            Pets pet = db.Pets.Find(key);
+            if (pet != null)
+            {
+                db.Pets.Remove(pet);
+                db.SaveChanges();
+                return Ok("Pet " + key + " removed");
+            }
+            else
+            {
+                return NotFound("Pet " + key + " not found.");
+            }
+        }
+
     } 
 }
