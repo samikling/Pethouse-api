@@ -17,45 +17,17 @@ namespace pethouse_api.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "nothing", "here" };
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            return "Nothing here";
         }
 
-        //// POST api/<UsersController>
-        //[HttpPost]
-        //public bool PostStatus(LoginModel input)
-        //{
-        //    try
-        //    {
-        //    var userName = input.userName;
-        //    var passWord = input.passWord;
-        //    pethouseContext context = new pethouseContext();
-        //        Users user = (from u in context.Users
-        //        where (u.Username == userName) && (u.Password == passWord)
-        //        select u).FirstOrDefault();
-                
-        //        if (user == null)
-        //        {
-        //            context.Dispose();
-        //            return false;
-        //        }
 
-        //        context.Dispose();
-        //        return true;
-        //    }
-        //    catch (System.Exception)
-        //    {
-                
-        //        throw;
-        //    }
-
-        //}
         [HttpPost]
         public Users PostStatus(LoginModel input)
         {
@@ -83,18 +55,6 @@ namespace pethouse_api.Controllers
                 throw;
             }
 
-        }
-
-        // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

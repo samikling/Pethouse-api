@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using pethouse_api.Models;
+using System.Collections;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace pethouse_api.Controllers
@@ -27,16 +28,42 @@ namespace pethouse_api.Controllers
             return petNames;
 
         }
+
         [HttpGet]
-        [Route("user/{key}")]
-        public List<Pets> GetPetByUserId(int key)
+        [Route("user/dogs/{key}")]
+        [Produces("application/json")]
+        public string[] GetDogsByUser(int key)
         {
             pethouseContext db = new pethouseContext();
+            var userPets = (from p in db.Pets
+                       where p.UserId == key && p.RaceId == 1
+                       select p.Petname).ToArray();
+            return userPets;
+            
+        }
+        [HttpGet]
+        [Route("user/cats/{key}")]
+        [Produces("application/json")]
+        public string[] GetCatsByUser(int key)
+        {
+            pethouseContext db = new pethouseContext();
+            var userPets = (from p in db.Pets
+                            where p.UserId == key && p.RaceId == 2
+                            select p.Petname).ToArray();
+            return userPets;
 
-            var somePets = from c in db.Pets
-                                where c.UserId == key
-                                select c;
-            return somePets.ToList();
+        }
+        [HttpGet]
+        [Route("user/test/{key}")]
+        [Produces("application/json")]
+        public IEnumerable<Pets> GetByUserTest(int key)
+        {
+            pethouseContext db = new pethouseContext();
+            var userPets = (from p in db.Pets
+                            where p.UserId == key && p.RaceId == 2
+                            select p);
+            return userPets;
+
         }
     } 
 }
