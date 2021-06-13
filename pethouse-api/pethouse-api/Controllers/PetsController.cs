@@ -16,12 +16,21 @@ namespace pethouse_api.Controllers
         [HttpGet]
         [Route("{key}")]
         //Hae kaikki lemmikit
-        public List<Pets> GetAllPets(int key)
+        public Pets GetAllPets(int key)
         {
             pethouseContext db = new pethouseContext();
-            List<Pets> pets = (from p in db.Pets 
-                              where p.UserId == key 
-                              select p).ToList();
+            Pets pet = db.Find<Pets>(key);
+            return pet;
+        }
+        [HttpGet]
+        [Route("user/{key}")]
+        //Hae kaikki lemmikit
+        public List<Pets> GetAllPetsByUser(int key)
+        {
+            pethouseContext db = new pethouseContext();
+            List<Pets> pets = (from p in db.Pets
+                               where p.UserId == key
+                               select p).ToList();
             return pets;
         }
         // GET: api/<PetsController>
