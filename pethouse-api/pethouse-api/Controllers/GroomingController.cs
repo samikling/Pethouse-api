@@ -20,7 +20,7 @@ namespace pethouse_api.Controllers
             pethouseContext db = new pethouseContext();
             Grooming grooming = (from p in db.Grooming
                                  where p.PetId == key
-                                 select p).FirstOrDefault();
+                                 select p).FirstOrDefault();// FirstOrDefault();
             if (grooming != null)
             {
                 return grooming;
