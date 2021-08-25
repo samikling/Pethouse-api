@@ -11,16 +11,21 @@ namespace pethouse_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+        /*
+         * ----------------------------------------------------------------------
+         * ---------------------------------GET----------------------------------
+         * ----------------------------------------------------------------------
+         */
     public class PetsController : ControllerBase
     {
         [HttpGet]
         [Route("{key}")]
         //Hae kaikki lemmikit
-        public Pets GetAllPets(int key)
+        public List<Pets> GetAllPets()
         {
             pethouseContext db = new pethouseContext();
-            Pets pet = db.Find<Pets>(key);
-            return pet;
+            
+            return db.Pets.ToList();
         }
         [HttpGet]
         [Route("user/{key}")]
@@ -33,44 +38,13 @@ namespace pethouse_api.Controllers
                                select p).ToList();
             return pets;
         }
-        // GET: api/<PetsController>
-        //Testataan erillaisia get vaihtoehtoja
-        [HttpGet]
-        [Route("user/dogs/{key}")]
-        [Produces("application/json")]
-        public string[] GetDogsByUser(int key)
-        {
-            pethouseContext db = new pethouseContext();
-            var userPets = (from p in db.Pets
-                            where p.UserId == key && p.RaceId == 1
-                            select p.Petname).ToArray();
-            return userPets;
-
-        }
-        [HttpGet]
-        [Route("user/cats/{key}")]
-        [Produces("application/json")]
-        public string[] GetCatsByUser(int key)
-        {
-            pethouseContext db = new pethouseContext();
-            var userPets = (from p in db.Pets
-                            where p.UserId == key && p.RaceId == 2
-                            select p.Petname).ToArray();
-            return userPets;
-
-        }
-        [HttpGet]
-        [Route("user/test/{key}")]
-        [Produces("application/json")]
-        public IEnumerable<Pets> GetByUserTest(int key)
-        {
-            pethouseContext db = new pethouseContext();
-            var userPets = (from p in db.Pets
-                            where p.UserId == key && p.RaceId == 2
-                            select p);
-            return userPets;
-
-        }
+        
+        /*
+         * ----------------------------------------------------------------------
+         * ---------------------------------POST---------------------------------
+         * ----------------------------------------------------------------------
+         */
+        
         [HttpPost] //<-- filtteri, joka sallii vain POST-metodit
         [Route("user/")]// <-- Routen placeholder
         public ActionResult PostCreateNew([FromBody] Pets pet)
@@ -91,6 +65,11 @@ namespace pethouse_api.Controllers
             return Ok(pet.PetId); //Palauttaa vastaluodun uuden lemmikin avainarvon
 
         }
+        /*
+         * ----------------------------------------------------------------------
+         * ---------------------------------PUT----------------------------------
+         * ----------------------------------------------------------------------
+         */
         [HttpPut]//<-- Filtteri, joka sallii vain PUT-metodit (Http-verbit)
         [Route("{key}")] //<--key == petId
         public ActionResult PutEdit(string key, [FromBody] Pets pet)
@@ -126,6 +105,11 @@ namespace pethouse_api.Controllers
                 db.Dispose();
             }
         }
+        /*
+         * ----------------------------------------------------------------------
+         * ---------------------------------DELETE-------------------------------
+         * ----------------------------------------------------------------------
+         */
         [HttpDelete]
         [Route("{key}")]
         public ActionResult DeleteOnePet(string key)

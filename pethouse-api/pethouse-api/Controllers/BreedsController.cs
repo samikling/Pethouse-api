@@ -14,9 +14,18 @@ namespace pethouse_api.Controllers
     public class BreedsController : ControllerBase
     {
         [HttpGet]
+        public List<Breeds> GetAllBreeds()
+        {
+            pethouseContext context = new pethouseContext();
+            List<Breeds> breeds = context.Breeds.ToList();
+            return breeds;
+        }
+        
+        
+        [HttpGet]
         [Route("{key}")]
-        //Hae kaikki lemmikit
-        public Breeds GetAllPets(int key)
+        //Hae yksi rotu
+        public Breeds GetOneBreed(int key)
         {
             pethouseContext db = new pethouseContext();
             Breeds breed = db.Find<Breeds>(key);
