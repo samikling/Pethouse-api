@@ -20,16 +20,16 @@ namespace pethouse_api.Controllers
     {
         [HttpGet]
         [Route("{key}")]
-        //Hae kaikki lemmikit
-        public List<Pets> GetAllPets()
+        //Hae yksi lemmikki lemmikki id:n perusteella
+        public Pets GetOnePetbyId(int key)
         {
             pethouseContext db = new pethouseContext();
-            
-            return db.Pets.ToList();
+            Pets pet = db.Find<Pets>(key);
+            return pet;
         }
         [HttpGet]
         [Route("user/{key}")]
-        //Hae kaikki lemmikit
+        //Hae kaikki lemmikit käyttäjä id:n perusteella
         public List<Pets> GetAllPetsByUser(int key)
         {
             pethouseContext db = new pethouseContext();
@@ -112,8 +112,13 @@ namespace pethouse_api.Controllers
          */
         [HttpDelete]
         [Route("{key}")]
-        public ActionResult DeleteOnePet(string key)
+        public ActionResult DeleteOnePet(int? key)
         {
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             pethouseContext db = new pethouseContext();
             Pets pet = db.Pets.Find(key);
             if (pet != null)
