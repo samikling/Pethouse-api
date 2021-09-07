@@ -72,7 +72,7 @@ namespace pethouse_api.Controllers
          */
         [HttpPut]//<-- Filtteri, joka sallii vain PUT-metodit (Http-verbit)
         [Route("{key}")] //<--key == petId
-        public ActionResult PutEdit(string key, [FromBody] Pets pet)
+        public ActionResult PutEdit(int key, [FromBody] Pets pet)
         {
             pethouseContext db = new pethouseContext();
             try
