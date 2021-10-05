@@ -188,7 +188,7 @@ namespace pethouse_api.Models
 
             modelBuilder.Entity<Vaccines>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.Property(e => e.PetId).HasColumnName("Pet_id");
 

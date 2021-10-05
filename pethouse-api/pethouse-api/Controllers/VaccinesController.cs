@@ -16,11 +16,11 @@ namespace pethouse_api.Controllers
         [HttpGet]
         [Route("{Key}")]
         //Hae kaikki Rokotukset
-        public Vaccines GetAllVaccines(int key)
+        public Vaccines GetTheLatestVaccine(int key)
         {
             pethouseContext db = new pethouseContext();
             Vaccines vaccines =       (from p in db.Vaccines
-                                           where p.PetId == key
+                                           where p.PetId == key orderby p.VacDate descending
                                            select p).FirstOrDefault();
             if (vaccines != null)
             {
@@ -31,6 +31,32 @@ namespace pethouse_api.Controllers
                 return null;
             }
             
+        }
+        /*
+        * ----------------------------------------------------------------------
+        * ---------------------------------POST---------------------------------
+        * ----------------------------------------------------------------------
+        */
+
+        [HttpPost] //<-- filtteri, joka sallii vain POST-metodit
+        //[Route("")]// <-- Routen placeholder
+        public ActionResult PostCreateNew([FromBody] Vaccines vac)
+        {
+            pethouseContext db = new pethouseContext(); //Tietokanta yhteytden muodostus
+            try
+            {
+                db.Vaccines.Add(vac);
+                db.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                string virhe = ex.GetType().Name.ToString() + ": " + ex.Message.ToString();
+                return BadRequest("Jokin meni pieleen asiakasta lisättäessä.\nOta yhteyttä Guruun!\n" + virhe);
+            }
+            db.Dispose(); //Tietokannan vapautus
+            return Ok(vac.PetId); //Palauttaa vastaluodun uuden objektin avainarvon
+
         }
     }
 }
