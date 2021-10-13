@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -26,6 +27,7 @@ namespace pethouse_api.Models
         public virtual DbSet<Races> Races { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Vaccines> Vaccines { get; set; }
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -61,7 +63,7 @@ namespace pethouse_api.Models
 
             modelBuilder.Entity<Grooming>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.Property(e => e.Comments)
                     .HasMaxLength(1000)
@@ -87,7 +89,7 @@ namespace pethouse_api.Models
 
             modelBuilder.Entity<Medications>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.Property(e => e.MedDate).HasColumnType("date");
 

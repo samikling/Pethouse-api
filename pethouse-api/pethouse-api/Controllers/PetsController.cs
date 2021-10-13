@@ -121,16 +121,19 @@ namespace pethouse_api.Controllers
 
             pethouseContext db = new pethouseContext();
             Pets pet = db.Pets.Find(key);
-            if (pet != null)
+            try
             {
-                db.Pets.Remove(pet);
-                db.SaveChanges();
-                return Ok("Pet " + key + " removed");
-            }
-            else
-            {
-                return NotFound("Pet " + key + " not found.");
-            }
+                if (pet != null)
+                {
+                    db.Pets.Remove(pet);
+                    db.SaveChanges();
+                    return Ok("Pet " + key + " removed");
+                }
+                else
+                {
+                    return NotFound("Pet " + key + " not found.");
+                }
+            }catch (Exception ex) {  return BadRequest(ex.ToString()); }
         }
 
     } 
