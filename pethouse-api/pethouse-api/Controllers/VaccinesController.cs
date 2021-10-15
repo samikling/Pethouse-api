@@ -34,6 +34,19 @@ namespace pethouse_api.Controllers
 
         }
         [HttpGet]
+        [Route("vaclist/{Key}")]
+        //Hae kaikki Rokotukset
+        public List<Vaccines> GetAllVaccinesList(int key)
+        {
+            pethouseContext db = new pethouseContext();
+            var vaccines = (from p in db.Vaccines
+                            where p.PetId == key
+                            orderby p.VacDate descending
+                            select p).ToList();
+            return vaccines;
+
+        }
+        [HttpGet]
         [Route("{Key}")]
         //Hae kaikki Rokotukset
         public Vaccines GetTheLatestVaccine(int key)
@@ -78,6 +91,43 @@ namespace pethouse_api.Controllers
             db.Dispose(); //Tietokannan vapautus
             return Ok(vac.PetId); //Palauttaa vastaluodun uuden objektin avainarvon
 
+        }
+        /*
+        * ----------------------------------------------------------------------
+        * ---------------------------------PUT----------------------------------
+        * ----------------------------------------------------------------------
+        */
+        [HttpPut]//<-- Filtteri, joka sallii vain PUT-metodit (Http-verbit)
+        [Route("{Key}")] //<--key == petId
+        public ActionResult PutEdit(int key,[FromBody] Vaccines vac)
+        {
+            pethouseContext db = new pethouseContext();
+            try
+            {
+                Vaccines vacDb = db.Vaccines.Find(key);
+                if (vac != null)
+                {
+                    vacDb.Vacname = vac.Vacname;
+                    vacDb.VacDate = vac.VacDate;
+                    vacDb.VacExpDate = vac.VacExpDate;
+                    db.SaveChanges();
+
+                    return Ok(vacDb.VacId);
+                }
+                else
+                {
+                    return NotFound("Not found");
+                }
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("Error");
+            }
+            finally
+            {
+                db.Dispose();
+            }
         }
         /*
         * ----------------------------------------------------------------------

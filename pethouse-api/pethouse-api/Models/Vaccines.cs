@@ -11,6 +11,7 @@ namespace pethouse_api.Models
     public partial class Vaccines
     {
         [Key]
+        public int VacId { get; set; }
         public string Vacname { get; set; }
         public DateTime? VacDate { get; set; }
         public DateTime? VacExpDate { get; set; }

@@ -10,6 +10,7 @@ namespace pethouse_api.Models
     public partial class Medications
     {
         [Key]
+        public int MedId { get; set; }
         public string Medname { get; set; }
         public DateTime? MedDate { get; set; }
         public DateTime? MedExpDate { get; set; }

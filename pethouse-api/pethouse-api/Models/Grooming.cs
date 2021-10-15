@@ -10,6 +10,7 @@ namespace pethouse_api.Models
     public partial class Grooming
     {
         [Key]
+        public int GroomId { get; set; }
         public string Groomname { get; set; }
         public DateTime? GroomDate { get; set; }
         public DateTime? GroomExpDate { get; set; }
