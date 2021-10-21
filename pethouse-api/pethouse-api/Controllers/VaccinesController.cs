@@ -13,8 +13,15 @@ namespace pethouse_api.Controllers
     [ApiController]
     public class VaccinesController : ControllerBase
     {
+        /*
+        * ----------------------------------------------------------------------
+        * ---------------------------------GET----------------------------------
+        * ----------------------------------------------------------------------
+        */
+
+        //Get Int-of items
         [HttpGet]
-        [Route("list/{Key}")]
+        [Route("count/{Key}")]
         //Hae kaikki Rokotukset
         public int GetAllVaccines(int key)
         {
@@ -33,8 +40,11 @@ namespace pethouse_api.Controllers
             }
 
         }
+        
+        //Get list of items
+
         [HttpGet]
-        [Route("vaclist/{Key}")]
+        [Route("list/{Key}")]
         //Hae kaikki Rokotukset
         public List<Vaccines> GetAllVaccinesList(int key)
         {
@@ -46,6 +56,7 @@ namespace pethouse_api.Controllers
             return vaccines;
 
         }
+        //Get latest item
         [HttpGet]
         [Route("{Key}")]
         //Hae kaikki Rokotukset
@@ -136,6 +147,32 @@ namespace pethouse_api.Controllers
         */
         [HttpDelete]
         [Route("{key}")]
+        public ActionResult DeleteVaccine(int? key)
+        {
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            pethouseContext db = new pethouseContext();
+            try
+            { Vaccines vaccine = db.Vaccines.Find(key);
+                db.Remove(vaccine);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
+        }
+        /*
+        * ----------------------------------------------------------------------
+        * ---------------------------------DELETE-------------------------------
+        * ----------------------------------------------------------------------
+        */
+        [HttpDelete]
+        [Route("list/{key}")]
         public ActionResult DeleteAllVaccines(int? key)
         {
             if (key is null)

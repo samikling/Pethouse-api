@@ -13,9 +13,27 @@ namespace pethouse_api.Controllers
     [ApiController]
     public class MedicationsController : ControllerBase
     {
+        /*
+        * ----------------------------------------------------------------------
+        * ---------------------------------GET----------------------------------
+        * ----------------------------------------------------------------------
+        */
+        //Get all items
         [HttpGet]
         [Route("list/{Key}")]
-        //Hae kaikki Rokotukset
+        public List<Medications> GetAllMedicationsList(int key)
+        {
+            pethouseContext db = new pethouseContext();
+            var mediacations = (from p in db.Medications
+                            where p.PetId == key
+                            orderby p.MedDate descending
+                            select p).ToList();
+            return mediacations;
+
+        }
+        //Get int-of items
+        [HttpGet]
+        [Route("count/{Key}")]
         public int GetAllMedications(int key)
         {
             pethouseContext db = new pethouseContext();
@@ -33,9 +51,9 @@ namespace pethouse_api.Controllers
             }
 
         }
+        //Get latest item
         [HttpGet]
         [Route("{Key}")]
-        //Hae kaikki Rokotukset
         public Medications GetTheLatestMedication(int key)
         {
             pethouseContext db = new pethouseContext();
@@ -81,11 +99,48 @@ namespace pethouse_api.Controllers
         }
         /*
         * ----------------------------------------------------------------------
+        * ---------------------------------PUT----------------------------------
+        * ----------------------------------------------------------------------
+        */
+        [HttpPut]//<-- Filtteri, joka sallii vain PUT-metodit (Http-verbit)
+        [Route("{Key}")] //<--key == petId
+        public ActionResult PutEdit(int key, [FromBody] Medications med)
+        {
+            pethouseContext db = new pethouseContext();
+            try
+            {
+                Medications medDb = db.Medications.Find(key);
+                if (med != null)
+                {
+                    medDb.Medname = med.Medname;
+                    medDb.MedDate = med.MedDate;
+                    medDb.MedExpDate = med.MedExpDate;
+                    db.SaveChanges();
+
+                    return Ok(medDb.MedId);
+                }
+                else
+                {
+                    return NotFound("Not found");
+                }
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("Error");
+            }
+            finally
+            {
+                db.Dispose();
+            }
+        }
+        /*
+        * ----------------------------------------------------------------------
         * ---------------------------------DELETE-------------------------------
         * ----------------------------------------------------------------------
         */
         [HttpDelete]
-        [Route("{key}")]
+        [Route("list/{key}")]
         public ActionResult DeleteAllMedications(int? key)
         {
             if (key is null)
@@ -98,6 +153,33 @@ namespace pethouse_api.Controllers
             {
                 Medications medicationsRow = db.Medications.Where(s => s.PetId == key).FirstOrDefault();
                 db.Remove(medicationsRow);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
+        }
+        /*
+       * ----------------------------------------------------------------------
+       * ---------------------------------DELETE-------------------------------
+       * ----------------------------------------------------------------------
+       */
+        [HttpDelete]
+        [Route("{key}")]
+        public ActionResult DeleteMedicine(int? key)
+        {
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            pethouseContext db = new pethouseContext();
+            try
+            {
+                Medications medications = db.Medications.Find(key);
+                db.Remove(medications);
                 db.SaveChanges();
             }
             catch (Exception ex)
