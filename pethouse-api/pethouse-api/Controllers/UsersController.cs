@@ -27,6 +27,38 @@ namespace pethouse_api.Controllers
             return "Nothing here";
         }
 
+        [HttpPost]
+        [Route("new")]
+        public ActionResult PostCreateNew([FromBody] Users user)
+        {
+            pethouseContext db = new pethouseContext(); //Tietokanta yhteytden muodostus
+            try
+            {
+                var exists = (from p in db.Users
+                                   where p.Username == user.Username
+                                   select p).Count();
+                if (exists > 0)
+                {
+                    return BadRequest(false);
+                }
+                else
+                {
+                db.Users.Add(user);
+                db.SaveChanges();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest("Jokin meni pieleen asiakasta lisättäessä.\nOta yhteyttä Guruun!\n" +ex.ToString());
+            }
+            db.Dispose(); //Tietokannan vapautus
+            return Ok(user.UserId); //Palauttaa vastaluodun uuden lemmikin avainarvon
+
+        }
+
 
         [HttpPost]
         public Users PostStatus(LoginModel input)
